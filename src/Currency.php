@@ -68,10 +68,12 @@ class Currency
      * @param string $from
      * @param string $to
      * @param bool   $format
+     * @param bool   $styling
+     * @param array  $customValues
      *
      * @return string
      */
-    public function convert($amount, $from = null, $to = null, $format = true, $styling = false)
+    public function convert($amount, $from = null, $to = null, $format = true, $styling = false, $customValues)
     {
         // Get currencies involved
         $from = $from ?: $this->config('default');
@@ -91,6 +93,15 @@ class Currency
             $value = $amount;
         } else {
             $value = ($amount * $to_rate) / $from_rate;
+        }
+
+        
+        if (!empty($customValues)) {
+            foreach($customValues as $currency=>$fixedAmount) {
+                if ($currency == $to) {
+                    $value = $fixedAmount;
+                }
+            }
         }
 
         // Should the result be formatted?
@@ -140,7 +151,7 @@ class Currency
         }
 
         $decimal = Arr::get($separators, '0.1', null);
-
+        
         // Match format for decimals count
         preg_match($valRegex, $format, $valFormat);
 
@@ -162,17 +173,38 @@ class Currency
             $value = preg_replace($valRegex, $value, $format);
         }
 
-        if ($styling == true) {
-            preg_match('/([\d\,]+)([\.][\d]+)?/', $value, $amount);
-            $value_whole = $amount[1];
+        // Split the value into integer and decimals ($9.95 = (1) 9.95 (2) 9 (3) .95)
+        preg_match('/([\d\,]+)([\.][\d]+)?/', $value, $amount);
+
+        // Extract the currency symbol from $value
+        preg_match('/[^\.\,\s\d]+/', $value, $symbol);
+
+        $value_whole = $amount[1];
+        $value_symbol = $symbol[0];
+
+        if (array_key_exists(2, $amount)) {
             $value_decimal = $amount[2];
-            preg_match('/[^\.\,\s\d]+/', $value, $symbol);
-            $value_symbol = $symbol[0];
+        } else {
+            $value_decimal = '';
+        }
+        
+        if ($styling == true) {
+            
+            if ($value_decimal == 0) {
+                $value_decimal = '';
+            }
+
             return '<span class="price-unit">' . $value_symbol . '</span>' . $negative . $value_whole . '<span class="price-unit">' . $value_decimal . '</span>';
+        
         }
 
+        if ($value_decimal == ".00") {
+            return $negative . $value_symbol . $value_whole;
+        }
+        else {
         // Return value
         return $negative . $value;
+        }
     }
 
     /**
