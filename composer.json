@@ -22,16 +22,16 @@
             "src/helpers.php"
         ],
         "psr-4": {
-            "Thecrazybob\\Currency\\": "src/"
+            "Torann\\Currency\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Thecrazybob\\Currency\\CurrencyServiceProvider"
+                "Torann\\Currency\\CurrencyServiceProvider"
             ],
             "aliases": {
-                "Currency": "Thecrazybob\\Currency\\Facades\\Currency"
+                "Currency": "Torann\\Currency\\Facades\\Currency"
             }
 	}
     }
