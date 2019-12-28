@@ -71,7 +71,7 @@ class Currency
      *
      * @return string
      */
-    public function convert($amount, $from = null, $to = null, $format = true)
+    public function convert($amount, $from = null, $to = null, $format = true, $styling = false)
     {
         // Get currencies involved
         $from = $from ?: $this->config('default');
@@ -89,14 +89,13 @@ class Currency
         // Convert amount
         if ($from === $to) {
             $value = $amount;
-        }
-        else {
+        } else {
             $value = ($amount * $to_rate) / $from_rate;
         }
 
         // Should the result be formatted?
         if ($format === true) {
-            return $this->format($value, $to);
+            return $this->format($value, $to, true, $styling);
         }
 
         // Return value
@@ -112,7 +111,7 @@ class Currency
      *
      * @return string
      */
-    public function format($value, $code = null, $include_symbol = true)
+    public function format($value, $code = null, $include_symbol = true, $styling)
     {
         // Get default currency if one is not set
         $code = $code ?: $this->config('default');
@@ -161,6 +160,15 @@ class Currency
         // Apply the formatted measurement
         if ($include_symbol) {
             $value = preg_replace($valRegex, $value, $format);
+        }
+
+        if ($styling == true) {
+            preg_match('/([\d\,]+)([\.][\d]+)?/', $value, $amount);
+            $value_whole = $amount[1];
+            $value_decimal = $amount[2];
+            preg_match('/[^\.\,\s\d]+/', $value, $symbol);
+            $value_symbol = $symbol[0];
+            return '<span class="price-unit">' . $value_symbol . '</span>' . $negative . $value_whole . '<span class="price-unit">' . $value_decimal . '</span>';
         }
 
         // Return value
@@ -236,8 +244,7 @@ class Currency
         if ($this->currencies_cache === null) {
             if (config('app.debug', false) === true) {
                 $this->currencies_cache = $this->getDriver()->all();
-            }
-            else {
+            } else {
                 $this->currencies_cache = $this->cache->rememberForever('torann.currency', function () {
                     return $this->getDriver()->all();
                 });
@@ -254,7 +261,7 @@ class Currency
      */
     public function getActiveCurrencies()
     {
-        return array_filter($this->getCurrencies(), function($currency) {
+        return array_filter($this->getCurrencies(), function ($currency) {
             return $currency['active'] == true;
         });
     }

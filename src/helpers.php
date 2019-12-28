@@ -11,13 +11,13 @@ if (!function_exists('currency')) {
      *
      * @return \Torann\Currency\Currency|string
      */
-    function currency($amount = null, $from = null, $to = null, $format = true)
+    function currency($amount = null, $styling = false, $from = null, $to = null, $format = true)
     {
         if (is_null($amount)) {
             return app('currency');
         }
 
-        return app('currency')->convert($amount, $from, $to, $format);
+        return app('currency')->convert($amount, $from, $to, $format, $styling);
     }
 }
 
