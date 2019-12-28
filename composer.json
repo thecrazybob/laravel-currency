@@ -1,5 +1,5 @@
 {
-    "name": "torann/currency",
+    "name": "thecrazybob/currency",
     "description": "This provides Laravel 5 with currency functions such as currency formatting and conversion using up-to-date exchange rates.",
     "keywords": ["laravel", "currency", "money", "exchange rate", "OpenExchangeRates", "finance"],
 	"license": "BSD-2-Clause",
@@ -22,16 +22,16 @@
             "src/helpers.php"
         ],
         "psr-4": {
-            "Torann\\Currency\\": "src/"
+            "Thecrazybob\\Currency\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Torann\\Currency\\CurrencyServiceProvider"
+                "Thecrazybob\\Currency\\CurrencyServiceProvider"
             ],
             "aliases": {
-                "Currency": "Torann\\Currency\\Facades\\Currency"
+                "Currency": "Thecrazybob\\Currency\\Facades\\Currency"
             }
 	}
     }
