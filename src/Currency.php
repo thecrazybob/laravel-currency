@@ -194,7 +194,7 @@ class Currency
                 $value_decimal = '';
             }
 
-            return '<span class="price-unit">' . $value_symbol . '</span>' . $negative . $value_whole . '<span class="price-unit">' . $value_decimal . '</span>';
+            return '<span id="amount-sign" class="price-unit">' . $value_symbol . '</span>' . $negative . $value_whole . '<span id="amount-decimal" class="price-unit">' . $value_decimal . '</span>';
         
         }
 
